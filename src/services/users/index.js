@@ -1,6 +1,7 @@
 const router = require("express").Router()
 const UserSchema = require("./schema")
 const UserModel = require("mongoose").model("User", UserSchema)
+const jwt = require('jsonwebtoken')
 
 router.post("/register", async (req, res) => {
     try {
@@ -26,9 +27,11 @@ router.post("/login", async (req, res) => {
         if (!username || !password) throw new Error("Provide credentials")
 
         const user = await UserModel.findOne({ username })
+        const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET);
+        
 
         user.password === password
-            ? res.status(200).send({ token: "VALID_TOKEN" })
+            ? res.status(200).send({ token})
             : res.status(401).send({ message: "No username/password match" })
 
     } catch (error) {
