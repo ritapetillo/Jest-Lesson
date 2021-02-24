@@ -66,10 +66,10 @@ describe("Stage III, /cat route", () => {
   });
 });
 
-// describe("Stage IV, /cat route",() => {
-//   it("Should return 401 because no token provided", async () => {
-//     const responseCat = await request.get("/cats");
+describe("Stage IV, /cat route",() => {
+  it("Should return 401 because no token provided", async () => {
+    const responseCat = await request.get("/cats");
 
-//     expect(responseCat.status).toEqual(401);
-//   });
-// });
+    expect(responseCat.status).toEqual(401);
+  });
+});
