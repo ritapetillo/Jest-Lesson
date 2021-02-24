@@ -16,16 +16,16 @@ server.get("/test", (req, res) => {
 server.get("/cats", async (req, res) => {
   try {
     const token = req.headers.authorization;
-    if (!token) res.status(401);
+    if (!token) res.status(401).send("error");
     else {
       const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-      if (!decoded) res.status(401)
+      if (!decoded) es.status(401).send("error");
       const catres = await axios.get("https://cataas.com/cat?json=true");
       const catData = catres.data;
       res.status(200).send(catData);
     }
   } catch (err) {
-    res.status(401);
+    res.status(401).send("error");
   }
 });
 
