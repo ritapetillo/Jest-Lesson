@@ -8,14 +8,19 @@ const user = {
   username: "ritapetillo",
   password: "pass",
 };
+let token;
+let savedUser;
 beforeAll((done) => {
   mongoose
     .connect(process.env.MONGO_URI_TEST, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
-    .then((res) => {
-      console.log("Successfully connected to Atlas.");
+      .then((res) => {
+              console.log("Successfully connected to Atlas.");
+
+           const newUser = new User(user);
+           savedUser = newUser.save();
       done();
     });
 });
@@ -28,8 +33,7 @@ afterAll((done) => {
 
 describe("Stage I, testing login route", () => {
   it("Should return 401 if credentilas are wrong", async () => {
-    const newUser = new User(user);
-    newUser.save();
+   
     const response = await request
       .post("/users/login")
       .send({ username: "rit", password: "bbb" })
@@ -39,8 +43,7 @@ describe("Stage I, testing login route", () => {
 
 describe("Stage II, should provide valid tokens with right credentials", () => {
   it("Should return a valid token", async () => {
-    const newUser = new User(user);
-    const savedUser = newUser.save();
+   
     const response = await request.post("/users/login").send(user);
     const { token } = response.body;
     const verifiedToekn = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -50,8 +53,7 @@ describe("Stage II, should provide valid tokens with right credentials", () => {
 
 describe("Stage III, /cat route", () => {
   it("Should return a valid token", async () => {
-    const newUser = new User(user);
-    const savedUser = newUser.save();
+
     const response = await request.post("/users/login").send(user);
     const { token } = response.body;
     const verifiedToekn = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -65,7 +67,7 @@ describe("Stage III, /cat route", () => {
 });
 
 // describe("Stage IV, /cat route",() => {
-//   it("Should return a valid token", async () => {
+//   it("Should return 401 because no token provided", async () => {
 //     const responseCat = await request.get("/cats");
 
 //     expect(responseCat.status).toEqual(401);
